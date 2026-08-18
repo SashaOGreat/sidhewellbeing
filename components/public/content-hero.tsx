@@ -1,0 +1,83 @@
+import Image from "next/image"
+import {
+  HeroBreadcrumbs,
+  type HeroBreadcrumbItem,
+} from "@/components/public/hero-breadcrumbs"
+
+type Props = {
+  title: string
+  description?: string | null
+  imageUrl?: string | null
+  breadcrumbs?: HeroBreadcrumbItem[]
+}
+
+/**
+ * Hero for category and subcategory pages — custom layout (not the homepage split).
+ * Background = the same image as in the preview, blurred + a semi-transparent brand colour.
+ */
+export function ContentHero({ title, description, imageUrl, breadcrumbs }: Props) {
+  const src = imageUrl?.trim() || ""
+
+  return (
+    <section className="relative overflow-hidden border-b border-white/15">
+      <div className="pointer-events-none absolute inset-0 bg-brand" aria-hidden>
+        {src ? (
+          <Image
+            src={src}
+            alt=""
+            fill
+            className="scale-[1.2] object-cover blur-[20px]"
+            sizes="100vw"
+          />
+        ) : null}
+      </div>
+      <div
+        className="pointer-events-none absolute inset-0 bg-brand/82"
+        aria-hidden
+      />
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-28 pb-10">
+        {src ? (
+          <div className="relative mb-8 aspect-[2/1] w-full overflow-hidden rounded-xl bg-white/10 ring-1 ring-white/20 lg:hidden">
+            <Image
+              src={src}
+              alt=""
+              fill
+              quality={100}
+              className="object-cover object-center"
+              priority
+              sizes="(max-width: 1024px) 100vw, 640px"
+            />
+          </div>
+        ) : null}
+
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:gap-12">
+          <div className="min-w-0 flex-1 border-white">
+            {breadcrumbs?.length ? <HeroBreadcrumbs items={breadcrumbs} /> : null}
+            <h1 className="text-3xl font-normal tracking-tight text-white md:text-4xl lg:text-5xl lg:leading-tight">
+              {title}
+            </h1>
+            {description ? (
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
+                {description}
+              </p>
+            ) : null}
+          </div>
+
+          {src ? (
+            <div className="relative mx-auto hidden aspect-square w-48 shrink-0 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-white/20 lg:mx-0 lg:block lg:w-52">
+              <Image
+                src={src}
+                alt=""
+                fill
+                quality={100}
+                className="object-cover object-center"
+                priority
+                sizes="640px"
+              />
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  )
+}

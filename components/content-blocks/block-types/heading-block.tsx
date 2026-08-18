@@ -1,0 +1,26 @@
+import { getHeadingData } from "@/lib/content-blocks"
+import { CtaLink } from "./cta-link"
+import type { ContentBlockComponentProps } from "./registry"
+
+type Props = ContentBlockComponentProps
+
+/**
+ * Public preview / body of a `heading` block.
+ * Data: `{ title: string }` in `block.data`.
+ */
+export function HeadingBlock({ block }: Props) {
+  const { title, ctaLabel, ctaUrl } = getHeadingData(block)
+  const t = title.trim()
+  const hasCta = Boolean(ctaLabel?.trim() || ctaUrl?.trim())
+  if (!t && !hasCta) return null
+  return (
+    <div className="space-y-2">
+      {t ? (
+        <h2 className="text-4xl font-normal tracking-tight text-foreground">
+          {t}
+        </h2>
+      ) : null}
+      <CtaLink label={ctaLabel} url={ctaUrl} />
+    </div>
+  )
+}
