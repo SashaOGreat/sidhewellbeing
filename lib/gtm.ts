@@ -1,5 +1,4 @@
-export const GTM_ID =
-  process.env.NEXT_PUBLIC_GTM_ID?.trim() || "GTM-MPMJ3VDP"
+export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID?.trim() || ""
 
 export const CONSENT_STORAGE_KEY = "cookie_consent_v2"
 

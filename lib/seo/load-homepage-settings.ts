@@ -1,5 +1,6 @@
 import { unstable_cache } from "next/cache"
 import { createClient } from "@supabase/supabase-js"
+import { isLegacyPestCopy } from "@/lib/site-config"
 
 const HOMEPAGE_SETTING_KEYS = [
   "homepage_h1",
@@ -20,11 +21,7 @@ export const DEFAULT_HOMEPAGE_DESCRIPTION =
 
 function resolveCopy(value: string | null | undefined, fallback: string) {
   const trimmed = value?.trim() ?? ""
-  if (
-    !trimmed ||
-    /deratiz|dezinfek|dezinsek|\bDDD\b/i.test(trimmed) ||
-    /[áäčďéíľňóôŕšťúýž]/i.test(trimmed)
-  ) {
+  if (!trimmed || isLegacyPestCopy(trimmed)) {
     return fallback
   }
   return trimmed

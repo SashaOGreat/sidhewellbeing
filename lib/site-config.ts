@@ -3,6 +3,10 @@ export const DEFAULT_SITE_NAME = "SIDHE Wellbeing"
 export const DEFAULT_SITE_DESCRIPTION =
   "Wellbeing, balance, and care for a better quality of life."
 
+export function isLegacyPestCopy(value: string): boolean {
+  return /deratiz|dezinfek|dezinsek|\bDDD\b/i.test(value)
+}
+
 /** Public site / company name in the title. E.g. NEXT_PUBLIC_SITE_NAME=SIDHE Wellbeing */
 export function getSiteName(): string {
   return process.env.NEXT_PUBLIC_SITE_NAME?.trim() || DEFAULT_SITE_NAME

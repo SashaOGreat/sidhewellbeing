@@ -1,3 +1,9 @@
+import {
+  DEFAULT_SITE_DESCRIPTION,
+  DEFAULT_SITE_NAME,
+  isLegacyPestCopy,
+} from "@/lib/site-config"
+
 /** Keys in the `site_settings` table for company / billing details and contact. */
 export const COMPANY_SITE_SETTING_KEYS = [
   "company_display_name",
@@ -42,12 +48,22 @@ function getValue(
   return rows.find((r) => r.key === key)?.value?.trim() ?? ""
 }
 
+function resolveDisplayName(value: string): string {
+  if (!value || isLegacyPestCopy(value)) return DEFAULT_SITE_NAME
+  return value
+}
+
+function resolveTagline(value: string): string {
+  if (!value || isLegacyPestCopy(value)) return DEFAULT_SITE_DESCRIPTION
+  return value
+}
+
 export function mapRowsToCompanyInfo(
   rows: { key: string; value: string | null }[]
 ): CompanyPublicInfo {
   return {
-    displayName: getValue(rows, "company_display_name") || "SIDHE Wellbeing",
-    tagline: getValue(rows, "company_tagline"),
+    displayName: resolveDisplayName(getValue(rows, "company_display_name")),
+    tagline: resolveTagline(getValue(rows, "company_tagline")),
     street: getValue(rows, "company_street"),
     city: getValue(rows, "company_city"),
     zip: getValue(rows, "company_zip"),

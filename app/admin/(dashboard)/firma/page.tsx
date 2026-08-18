@@ -18,6 +18,7 @@ import {
   COMPANY_SITE_SETTING_KEYS,
   type CompanySiteSettingKey,
 } from "@/lib/company-site-settings"
+import { DEFAULT_SITE_DESCRIPTION, DEFAULT_SITE_NAME, isLegacyPestCopy } from "@/lib/site-config"
 import { toast } from "sonner"
 import { Save, Loader2 } from "lucide-react"
 
@@ -69,6 +70,12 @@ export default function CompanySettingsAdmin() {
         const next = emptyCompanyForm()
         for (const key of keys) {
           next[key] = data.find((s) => s.key === key)?.value ?? ""
+        }
+        if (!next.company_display_name || isLegacyPestCopy(next.company_display_name)) {
+          next.company_display_name = DEFAULT_SITE_NAME
+        }
+        if (!next.company_tagline || isLegacyPestCopy(next.company_tagline)) {
+          next.company_tagline = DEFAULT_SITE_DESCRIPTION
         }
         setValues(next)
       }
