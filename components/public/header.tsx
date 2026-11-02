@@ -85,12 +85,6 @@ export function Header({ categories }: Props) {
 
             <ThemeToggle />
 
-            <Link href="/pricing">
-              <Button variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-                Price list
-              </Button>
-            </Link>
-
             <Link href="/contact" className="ml-1">
               <Button size="sm">Contact</Button>
             </Link>
@@ -141,13 +135,6 @@ export function Header({ categories }: Props) {
                   ))}
                   <div className="border-t border-border my-3" />
                   <Link
-                    href="/pricing"
-                    onClick={() => setOpen(false)}
-                    className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
-                  >
-                    Price list
-                  </Link>
-                  <Link
                     href="/blog"
                     onClick={() => setOpen(false)}
                     className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
@@ -194,9 +181,6 @@ function CategoryNavItem({
         <ChevronDown className="ml-1 h-3 w-3 opacity-60" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-[16rem] p-2">
-        <DropdownMenuItem render={<Link href={`/${category.slug}`} />}>
-          <span className="font-medium">Everything in {category.name}</span>
-        </DropdownMenuItem>
         {category.subcategories.map((sub) => (
           <DropdownMenuItem
             key={sub.id}
