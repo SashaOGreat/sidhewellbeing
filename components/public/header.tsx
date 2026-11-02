@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet"
@@ -14,9 +14,10 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SiteEmblem } from "@/components/public/site-emblem"
 import type { Category, Subcategory } from "@/lib/types"
-import { toSentenceCase } from "@/lib/utils"
+import { cn, toSentenceCase } from "@/lib/utils"
 
 const MAX_VISIBLE_CATEGORIES = 7
+const SCROLL_THRESHOLD = 24
 
 type Props = {
   categories: (Category & { subcategories: Subcategory[] })[]
@@ -24,24 +25,57 @@ type Props = {
 
 export function Header({ categories }: Props) {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > SCROLL_THRESHOLD)
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    return () => window.removeEventListener("scroll", update)
+  }, [])
 
   const visibleCategories = categories.slice(0, MAX_VISIBLE_CATEGORIES)
   const hiddenCategories = categories.slice(MAX_VISIBLE_CATEGORIES)
+  const solid = scrolled || open
+
+  const ghostNavClass = solid
+    ? "text-sm font-medium text-muted-foreground hover:text-foreground"
+    : "text-sm font-medium text-white/85 hover:bg-white/10 hover:text-white"
+
+  const iconGhostClass = solid
+    ? undefined
+    : "text-white hover:bg-white/10 hover:text-white"
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/95 shadow-sm backdrop-blur-md transition-all duration-300">
+    <header
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300",
+        solid
+          ? "border-b border-border bg-background/95 shadow-sm backdrop-blur-md"
+          : "border-b border-transparent bg-transparent"
+      )}
+    >
       <div className="mx-auto w-full max-w-6xl px-4">
         <div className="flex items-center justify-between h-16 lg:h-18">
           <Link
             href="/"
-            className="flex items-center gap-2.5 text-lg font-normal tracking-tight text-foreground transition-opacity hover:opacity-90"
+            className={cn(
+              "flex items-center gap-2.5 text-lg font-normal tracking-tight transition-colors hover:opacity-90",
+              solid ? "text-foreground" : "text-white"
+            )}
           >
-            <SiteEmblem className="h-9 w-9 lg:h-10 lg:w-10" decorative />
+            <SiteEmblem
+              className={cn(
+                "h-9 w-9 lg:h-10 lg:w-10 transition-colors",
+                solid ? "text-brand" : "text-white"
+              )}
+              decorative
+            />
             <span className="flex flex-col gap-0 leading-none">
               <span className="text-lg font-normal leading-none tracking-tight">
                 SIDHE
               </span>
-              <span className=" text-xs font-medium leading-none tracking-[0.14em]">
+              <span className="text-xs font-medium leading-none tracking-[0.14em]">
                 WELLBEING
               </span>
             </span>
@@ -50,17 +84,18 @@ export function Header({ categories }: Props) {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-0.5">
             {visibleCategories.map((cat) => (
-              <CategoryNavItem key={cat.id} category={cat} />
+              <CategoryNavItem
+                key={cat.id}
+                category={cat}
+                linkClasses={ghostNavClass}
+              />
             ))}
 
             {hiddenCategories.length > 0 && (
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
-                    <Button
-                      variant="ghost"
-                      className="text-sm font-medium text-muted-foreground hover:text-foreground"
-                    />
+                    <Button variant="ghost" className={ghostNavClass} />
                   }
                 >
                   More
@@ -82,21 +117,41 @@ export function Header({ categories }: Props) {
               </DropdownMenu>
             )}
 
-            <div className="w-px h-5 bg-border/50 mx-1.5" />
+            <div
+              className={cn(
+                "mx-1.5 h-5 w-px",
+                solid ? "bg-border/50" : "bg-white/25"
+              )}
+            />
 
-            <ThemeToggle />
+            <ThemeToggle className={iconGhostClass} />
 
             <Link href="/contact" className="ml-1">
-              <Button size="sm">Contact</Button>
+              <Button
+                size="sm"
+                className={
+                  solid
+                    ? undefined
+                    : "border border-white/40 bg-white text-zinc-950 hover:bg-white/90 hover:text-zinc-950"
+                }
+              >
+                Contact
+              </Button>
             </Link>
           </nav>
 
           {/* Mobile Navigation */}
           <div className="flex items-center gap-1 lg:hidden">
-            <ThemeToggle />
+            <ThemeToggle className={iconGhostClass} />
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger
-                render={<Button variant="ghost" size="icon" />}
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={iconGhostClass}
+                  />
+                }
               >
                 {open ? (
                   <X className="h-5 w-5" />
@@ -176,12 +231,11 @@ function isHomeCategory(category: Category) {
 
 function CategoryNavItem({
   category,
+  linkClasses,
 }: {
   category: Category & { subcategories: Subcategory[] }
+  linkClasses: string
 }) {
-  const linkClasses =
-    "text-sm font-medium text-muted-foreground hover:text-foreground"
-
   if (isHomeCategory(category)) {
     return (
       <Link href="/">

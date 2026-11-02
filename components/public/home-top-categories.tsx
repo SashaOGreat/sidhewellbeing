@@ -68,7 +68,7 @@ export function HomeTopCategories({
           : "border-border bg-muted pt-12 pb-16 text-foreground md:pt-16 dark:bg-background"
       }
     >
-      <div className={hero ? "w-full" : "mx-auto w-full max-w-6xl px-4"}>
+      <div className={hero ? "w-full" : "mx-auto w-full max-w-6xl px-4 -mt-36"}>
         <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 lg:gap-5">
           {categories.map((cat) => (
             <CategoryCard
