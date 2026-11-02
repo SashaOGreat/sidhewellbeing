@@ -1,7 +1,6 @@
 import type { ReactNode } from "react"
-import Image from "next/image"
 import Link from "next/link"
-import { Mail, MessageCircle, Phone } from "lucide-react"
+import { MessageCircle, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   type CompanyPublicInfo,
@@ -118,23 +117,6 @@ export function CompanyContactLinks({
           </a>
         </ContactRow>
       ) : null}
-
-      <ContactRow icon={<Mail className="h-4 w-4" aria-hidden />}>
-        <div className="block max-w-[280px]">
-          <span className="relative block h-6 w-[80%]">
-            <Image
-              src="/mailpic.jpg"
-              alt=""
-              fill
-              className="object-contain object-left dark:invert"
-              sizes="280px"
-            />
-          </span>
-          <p className="text-xs font-medium text-foreground">
-            Ochrana proti spamu
-          </p>
-        </div>
-      </ContactRow>
 
       {ig || fb ? (
         <div className="flex flex-wrap gap-2 pt-1">
