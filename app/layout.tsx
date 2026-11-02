@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Playwrite_IT_Trad } from "next/font/google"
+import { Geist, Lovers_Quarrel } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import {
@@ -19,9 +19,10 @@ const geistSans = Geist({
   subsets: ["latin"],
 })
 
-const playwriteITTrad = Playwrite_IT_Trad({
+const loversQuarrel = Lovers_Quarrel({
   variable: "--font-heading",
-  weight: "variable",
+  weight: "400",
+  subsets: ["latin"],
 })
 
 const siteUrl = getSiteUrl()
@@ -41,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${playwriteITTrad.variable}`}
+      className={`${geistSans.variable} ${loversQuarrel.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased">
