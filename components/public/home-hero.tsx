@@ -19,7 +19,10 @@ export function HomeHero({
 }: Props) {
   const customSrc = imageUrl?.trim()
   const src = customSrc || ""
-  const columns = topCategories?.slice(0, 4) ?? []
+  const columns =
+    topCategories
+      ?.filter((cat) => cat.slug.trim().toLowerCase() !== "home")
+      .slice(0, 4) ?? []
 
   return (
     <>
@@ -44,12 +47,12 @@ export function HomeHero({
 
         <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pt-54 pb-16">
           <div className="max-w-2xl text-center lg:text-left">
-            <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-white sm:text-3xl md:text-6xl">
+            <h1 className="text-2xl font-normal leading-[1.05] tracking-tight text-white sm:text-3xl md:text-6xl">
               {title}
             </h1>
 
             {description ? (
-              <p className="mx-auto mt-6 max-w-xl text-2xl font-normal leading-relaxed text-white/90 md:mt-8 lg:mx-0">
+              <p className="mx-auto mt-6 max-w-xl text-xl font-normal leading-relaxed text-white/90 md:mt-8 lg:mx-0">
                 {description}
               </p>
             ) : null}
