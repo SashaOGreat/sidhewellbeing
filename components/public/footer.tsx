@@ -77,7 +77,7 @@ export async function Footer({ categories }: Props) {
     "Wellbeing, balance, and care for a better quality of life."
 
   return (
-    <footer className="relative mt-24 border-t border-zinc-800 bg-zinc-950 text-zinc-400">
+    <footer className="relative border-t border-zinc-800 bg-zinc-950 text-zinc-400">
       <div className="mx-auto w-full max-w-6xl px-4 py-22 lg:py-34">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4 space-y-4 lg:pr-2">

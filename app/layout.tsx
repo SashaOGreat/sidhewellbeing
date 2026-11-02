@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist } from "next/font/google"
+import { Geist, Playwrite_IT_Trad } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import {
@@ -19,6 +19,11 @@ const geistSans = Geist({
   subsets: ["latin"],
 })
 
+const playwriteITTrad = Playwrite_IT_Trad({
+  variable: "--font-heading",
+  weight: "variable",
+})
+
 const siteUrl = getSiteUrl()
 const siteName = getSiteName()
 
@@ -34,7 +39,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={geistSans.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${playwriteITTrad.variable}`}
+      suppressHydrationWarning
+    >
       <body className="antialiased">
         <GoogleTagManager />
         <GoogleTagManagerNoscript />
