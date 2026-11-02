@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { Category, Subcategory } from "@/lib/types"
+import { toSentenceCase } from "@/lib/utils"
 
 type Cat = Category & { subcategories: Subcategory[] }
 
@@ -43,7 +44,7 @@ function CategoryCard({ cat, sizes }: { cat: Cat; sizes: string }) {
             aria-hidden
           />
           <p className="absolute inset-x-0 bottom-0 px-3 pb-4 text-left text-base font-normal leading-snug text-white drop-shadow-sm md:text-lg">
-            {cat.name}
+            {toSentenceCase(cat.name)}
           </p>
         </div>
       </Link>

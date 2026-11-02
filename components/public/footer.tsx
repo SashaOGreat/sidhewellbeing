@@ -5,7 +5,7 @@ import { getCompanyPublicInfoCached } from "@/lib/get-company-settings-cached"
 import { withHttps } from "@/lib/company-site-settings"
 import { Separator } from "@/components/ui/separator"
 import { SiteEmblem } from "@/components/public/site-emblem"
-import { cn } from "@/lib/utils"
+import { cn, toSentenceCase } from "@/lib/utils"
 
 type Props = {
   categories: Category[]
@@ -89,9 +89,9 @@ export async function Footer({ categories }: Props) {
               >
                 <SiteEmblem className="h-10 w-10" decorative />
               </Link>
-              <h3 className="font-normal text-xl tracking-tight text-white">
+              <h2 className="font-normal text-xl tracking-tight text-white">
                 {company.displayName}
-              </h3>
+              </h2>
               <p className="mt-2 text-sm leading-relaxed text-zinc-400">
                 {company.tagline || defaultTagline}
               </p>
@@ -135,7 +135,7 @@ export async function Footer({ categories }: Props) {
                     href={`/${cat.slug}`}
                     className="text-sm text-zinc-400 transition-colors hover:text-white"
                   >
-                    {cat.name}
+                    {toSentenceCase(cat.name)}
                   </Link>
                 </li>
               ))}

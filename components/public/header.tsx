@@ -14,6 +14,7 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SiteEmblem } from "@/components/public/site-emblem"
 import type { Category, Subcategory } from "@/lib/types"
+import { toSentenceCase } from "@/lib/utils"
 
 const MAX_VISIBLE_CATEGORIES = 7
 
@@ -74,7 +75,7 @@ export function Header({ categories }: Props) {
                       key={cat.id}
                       render={<Link href={`/${cat.slug}`} />}
                     >
-                      {cat.name}
+                      {toSentenceCase(cat.name)}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -129,7 +130,7 @@ export function Header({ categories }: Props) {
                           onClick={() => setOpen(false)}
                           className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
                         >
-                          {cat.name}
+                          {toSentenceCase(cat.name)}
                         </Link>
                         {cat.subcategories?.length > 0 && (
                           <div className="ml-3 border-l border-border pl-3">
@@ -140,7 +141,7 @@ export function Header({ categories }: Props) {
                                 onClick={() => setOpen(false)}
                                 className="block px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                               >
-                                {sub.name}
+                                {toSentenceCase(sub.name)}
                               </Link>
                             ))}
                           </div>
@@ -195,7 +196,7 @@ function CategoryNavItem({
     return (
       <Link href={`/${category.slug}`}>
         <Button variant="ghost" className={linkClasses}>
-          {category.name}
+          {toSentenceCase(category.name)}
         </Button>
       </Link>
     )
@@ -206,7 +207,7 @@ function CategoryNavItem({
       <DropdownMenuTrigger
         render={<Button variant="ghost" className={linkClasses} />}
       >
-        {category.name}
+        {toSentenceCase(category.name)}
         <ChevronDown className="ml-1 h-3 w-3 opacity-60" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-[16rem] p-2">
@@ -215,7 +216,7 @@ function CategoryNavItem({
             key={sub.id}
             render={<Link href={`/${category.slug}/${sub.slug}`} />}
           >
-            {sub.name}
+            {toSentenceCase(sub.name)}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
