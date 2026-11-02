@@ -12,12 +12,15 @@ type Props = {
 }
 
 const iconCircleClass =
-  "mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 text-zinc-300 shadow-sm group-hover:border-zinc-500"
+  "mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-muted text-muted-foreground shadow-sm transition-colors group-hover:border-foreground/30 group-hover:text-foreground"
 
 const socialIconClass = cn(
-  "inline-flex h-10 w-10 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900",
-  "text-zinc-400 shadow-sm transition-colors"
+  "inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-muted",
+  "text-muted-foreground shadow-sm transition-colors"
 )
+
+const linkClass =
+  "text-sm text-muted-foreground transition-colors hover:text-foreground"
 
 function FacebookGlyph({ className }: { className?: string }) {
   return (
@@ -54,8 +57,8 @@ function InstagramGlyph({ className }: { className?: string }) {
 function DetailLine({ label, value }: { label: string; value: string }) {
   if (!value) return null
   return (
-    <p className="text-xs text-zinc-400">
-      <span className="font-medium text-zinc-300">{label}:</span>{" "}
+    <p className="text-xs text-muted-foreground">
+      <span className="font-medium text-foreground">{label}:</span>{" "}
       <span className="break-words">{value}</span>
     </p>
   )
@@ -77,7 +80,7 @@ export async function Footer({ categories }: Props) {
     "Wellbeing, balance, and care for a better quality of life."
 
   return (
-    <footer className="relative border-t border-zinc-800 bg-zinc-950 text-zinc-400">
+    <footer className="relative border-t border-border bg-background text-muted-foreground">
       <div className="mx-auto w-full max-w-6xl px-4 py-22 lg:py-34">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4 space-y-4 lg:pr-2">
@@ -89,22 +92,22 @@ export async function Footer({ categories }: Props) {
               >
                 <SiteEmblem className="h-10 w-10" decorative />
               </Link>
-              <h2 className="font-normal text-xl tracking-tight text-white">
+              <h2 className="font-normal text-xl tracking-tight text-foreground">
                 {company.displayName}
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {company.tagline || defaultTagline}
               </p>
             </div>
 
             {(hasAddress || hasIds) && (
               <>
-                <Separator className="bg-zinc-800" />
+                <Separator />
                 <div>
-                  <h4 className="mb-3 text-xs font-normal uppercase tracking-wider text-zinc-500">
+                  <h4 className="mb-3 text-xs font-normal uppercase tracking-wider text-muted-foreground">
                     Billing details
                   </h4>
-                  <div className="space-y-2 text-sm text-zinc-400">
+                  <div className="space-y-2 text-sm text-muted-foreground">
                     {hasAddress && (
                       <address className="not-italic leading-relaxed space-y-0.5">
                         {company.street ? <p>{company.street}</p> : null}
@@ -125,16 +128,13 @@ export async function Footer({ categories }: Props) {
           </div>
 
           <div className="lg:col-span-2">
-            <h4 className="mb-4 text-xs font-normal uppercase tracking-wider text-zinc-500">
+            <h4 className="mb-4 text-xs font-normal uppercase tracking-wider text-muted-foreground">
               Services
             </h4>
             <ul className="space-y-2.5">
               {categories.map((cat) => (
                 <li key={cat.id}>
-                  <Link
-                    href={`/${cat.slug}`}
-                    className="text-sm text-zinc-400 transition-colors hover:text-white"
-                  >
+                  <Link href={`/${cat.slug}`} className={linkClass}>
                     {toSentenceCase(cat.name)}
                   </Link>
                 </li>
@@ -143,39 +143,27 @@ export async function Footer({ categories }: Props) {
           </div>
 
           <div className="lg:col-span-2">
-            <h4 className="mb-4 text-xs font-normal uppercase tracking-wider text-zinc-500">
+            <h4 className="mb-4 text-xs font-normal uppercase tracking-wider text-muted-foreground">
               Navigation
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <Link
-                  href="/"
-                  className="text-sm text-zinc-400 transition-colors hover:text-white"
-                >
+                <Link href="/" className={linkClass}>
                   Home
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/blog"
-                  className="text-sm text-zinc-400 transition-colors hover:text-white"
-                >
+                <Link href="/blog" className={linkClass}>
                   Blog
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/contact"
-                  className="text-sm text-zinc-400 transition-colors hover:text-white"
-                >
+                <Link href="/contact" className={linkClass}>
                   Contact
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/admin/login"
-                  className="text-sm text-zinc-400 transition-colors hover:text-white"
-                >
+                <Link href="/admin/login" className={linkClass}>
                   Administrator
                 </Link>
               </li>
@@ -183,7 +171,7 @@ export async function Footer({ categories }: Props) {
           </div>
 
           <div className="sm:col-span-2 lg:col-span-4 lg:pl-2">
-            <h4 className="mb-4 text-xs font-normal uppercase tracking-wider text-zinc-500">
+            <h4 className="mb-4 text-xs font-normal uppercase tracking-wider text-muted-foreground">
               Contact
             </h4>
             {hasContactBlock ? (
@@ -191,7 +179,7 @@ export async function Footer({ categories }: Props) {
                 {company.phone ? (
                   <a
                     href={`tel:${company.phone.replace(/\s+/g, "")}`}
-                    className="group flex items-start gap-3 text-sm text-zinc-400 transition-colors hover:text-white"
+                    className="group flex items-start gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     <span className={iconCircleClass}>
                       <Phone className="h-4 w-4" aria-hidden />
@@ -202,7 +190,7 @@ export async function Footer({ categories }: Props) {
                 {company.email ? (
                   <a
                     href={`mailto:${company.email}`}
-                    className="group flex items-start gap-3 text-sm text-zinc-400 transition-colors hover:text-white"
+                    className="group flex items-start gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     <span className={iconCircleClass}>
                       <Mail className="h-4 w-4" aria-hidden />
@@ -246,14 +234,14 @@ export async function Footer({ categories }: Props) {
                 )}
               </div>
             ) : (
-              <p className="text-sm text-zinc-400">
+              <p className="text-sm text-muted-foreground">
                 Add these details in Administration under Company details.
               </p>
             )}
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-zinc-800 pt-8 text-center text-sm text-zinc-500 sm:flex-row sm:text-left">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-8 text-center text-sm text-muted-foreground sm:flex-row sm:text-left">
           <p>
             &copy; {new Date().getFullYear()} {company.displayName}. All
             rights reserved.
