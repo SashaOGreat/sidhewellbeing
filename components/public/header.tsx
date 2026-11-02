@@ -108,31 +108,46 @@ export function Header({ categories }: Props) {
                   Menu
                 </SheetTitle>
                 <nav className="flex flex-col gap-0.5 px-4">
-                  {categories.map((cat) => (
-                    <div key={cat.id}>
-                      <Link
-                        href={`/${cat.slug}`}
-                        onClick={() => setOpen(false)}
-                        className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
-                      >
-                        {cat.name}
-                      </Link>
-                      {cat.subcategories?.length > 0 && (
-                        <div className="ml-3 border-l border-border pl-3">
-                          {cat.subcategories.map((sub) => (
-                            <Link
-                              key={sub.id}
-                              href={`/${cat.slug}/${sub.slug}`}
-                              onClick={() => setOpen(false)}
-                              className="block px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                            >
-                              {sub.name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                  {categories.map((cat) => {
+                    if (isHomeCategory(cat)) {
+                      return (
+                        <Link
+                          key={cat.id}
+                          href="/"
+                          onClick={() => setOpen(false)}
+                          className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
+                        >
+                          Home
+                        </Link>
+                      )
+                    }
+
+                    return (
+                      <div key={cat.id}>
+                        <Link
+                          href={`/${cat.slug}`}
+                          onClick={() => setOpen(false)}
+                          className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
+                        >
+                          {cat.name}
+                        </Link>
+                        {cat.subcategories?.length > 0 && (
+                          <div className="ml-3 border-l border-border pl-3">
+                            {cat.subcategories.map((sub) => (
+                              <Link
+                                key={sub.id}
+                                href={`/${cat.slug}/${sub.slug}`}
+                                onClick={() => setOpen(false)}
+                                className="block px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                              >
+                                {sub.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
                   <div className="border-t border-border my-3" />
                   <Link
                     href="/blog"
@@ -154,6 +169,10 @@ export function Header({ categories }: Props) {
   )
 }
 
+function isHomeCategory(category: Category) {
+  return category.slug.trim().toLowerCase() === "home"
+}
+
 function CategoryNavItem({
   category,
 }: {
@@ -161,6 +180,16 @@ function CategoryNavItem({
 }) {
   const linkClasses =
     "text-sm font-medium text-muted-foreground hover:text-foreground"
+
+  if (isHomeCategory(category)) {
+    return (
+      <Link href="/">
+        <Button variant="ghost" className={linkClasses}>
+          Home
+        </Button>
+      </Link>
+    )
+  }
 
   if (!category.subcategories || category.subcategories.length === 0) {
     return (
