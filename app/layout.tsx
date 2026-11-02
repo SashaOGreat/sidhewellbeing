@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Lovers_Quarrel } from "next/font/google"
+import { Fredericka_the_Great, Geist } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import {
@@ -19,7 +19,7 @@ const geistSans = Geist({
   subsets: ["latin"],
 })
 
-const loversQuarrel = Lovers_Quarrel({
+const frederickaTheGreat = Fredericka_the_Great({
   variable: "--font-heading",
   weight: "400",
   subsets: ["latin"],
@@ -42,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${loversQuarrel.variable}`}
+      className={`${geistSans.variable} ${frederickaTheGreat.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased">
