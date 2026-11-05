@@ -1,66 +1,68 @@
-import Image from "next/image"
-import { HomeTopCategories } from "@/components/public/home-top-categories"
-import type { Category, Subcategory } from "@/lib/types"
-
-type TopCategory = Category & { subcategories: Subcategory[] }
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 type Props = {
   title: string
   description?: string | null
-  imageUrl?: string | null
-  topCategories?: TopCategory[]
+  videoUrl?: string | null
+  posterUrl?: string | null
 }
 
 export function HomeHero({
   title,
   description,
-  imageUrl,
-  topCategories,
+  videoUrl,
+  posterUrl,
 }: Props) {
-  const customSrc = imageUrl?.trim()
-  const src = customSrc || ""
-  const columns =
-    topCategories
-      ?.filter((cat) => cat.slug.trim().toLowerCase() !== "home")
-      .slice(0, 4) ?? []
+  const videoSrc = videoUrl?.trim() || ""
+  const poster = posterUrl?.trim() || undefined
 
   return (
-    <>
-      <section className="relative flex min-h-[75vh] w-full overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-zinc-950" aria-hidden>
-          {src ? (
-            <Image
-              src={src}
-              alt=""
-              fill
-              priority
-              quality={100}
-              className="object-cover object-center"
-              sizes="100vw"
-            />
+    <section className="relative flex min-h-dvh w-full overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-zinc-950" aria-hidden>
+        {videoSrc ? (
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={poster}
+          >
+            <source src={videoSrc} />
+          </video>
+        ) : null}
+      </div>
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-black/70"
+        aria-hidden
+      />
+
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center px-4 py-28 text-center">
+        <div className="max-w-3xl">
+          <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            {title}
+          </h1>
+
+          {description ? (
+            <p className="mx-auto mt-6 max-w-2xl text-lg font-normal leading-relaxed text-white/90 md:mt-8 md:text-xl">
+              {description}
+            </p>
           ) : null}
-        </div>
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/30"
-          aria-hidden
-        />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 pt-54 pb-16">
-          <div className="max-w-2xl text-center lg:text-left">
-            <h1 className="text-4xl font-normal leading-[1.05] tracking-tight text-white sm:text-3xl md:text-6xl">
-              {title}
-            </h1>
-
-            {description ? (
-              <p className="mx-auto max-w-xl text-xl font-normal leading-relaxed text-white/90 md:mt-8 lg:mx-0">
-                {description}
-              </p>
-            ) : null}
+          <div className="mt-10 md:mt-12">
+            <Button
+              size="lg"
+              className="h-14 px-8 text-base md:h-16 md:px-10 md:text-lg"
+              nativeButton={false}
+              render={<Link href="/pricing" />}
+            >
+              Upcoming events
+            </Button>
           </div>
         </div>
-      </section>
-
-      {columns.length > 0 ? <HomeTopCategories categories={columns} /> : null}
-    </>
+      </div>
+    </section>
   )
 }

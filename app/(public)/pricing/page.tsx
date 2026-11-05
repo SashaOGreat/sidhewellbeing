@@ -6,6 +6,7 @@ import {
 } from "@/components/public/price-list-section"
 import type { Category, PriceListItem, Subcategory } from "@/lib/types"
 import type { Metadata } from "next"
+import { whatsAppMeUrl } from "@/lib/company-site-settings"
 import { getCompanyPublicInfoCached } from "@/lib/get-company-settings-cached"
 import { buildMetaTitle } from "@/lib/site-config"
 
@@ -29,6 +30,7 @@ export default async function PriceListPage() {
     (subcategoriesRes.data as Subcategory[]) ?? [],
     (itemsRes.data as PriceListItem[]) ?? []
   )
+  const whatsAppUrl = whatsAppMeUrl(company.phone)
 
   return (
     <div className="pb-16 pt-24 sm:pt-28 lg:pt-32">
@@ -53,6 +55,7 @@ export default async function PriceListPage() {
                   key={section.category.id}
                   title={section.category.name}
                   items={section.items}
+                  whatsAppUrl={whatsAppUrl}
                   subcategories={section.subcategories.map(
                     ({ subcategory, items }) => ({
                       title: subcategory.name,

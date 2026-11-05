@@ -38,6 +38,7 @@ export type PriceListItem = {
   category_id: string | null
   subcategory_id: string | null
   name: string
+  description: string
   price: string
   image_url: string | null
   display_order: number

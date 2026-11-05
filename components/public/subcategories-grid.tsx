@@ -11,7 +11,7 @@ export function SubcategoriesGrid({ subcategories, categorySlug }: Props) {
   if (subcategories.length === 0) return null
 
   return (
-    <section className="border-border bg-white pb-16 pt-16 text-foreground dark:bg-background">
+    <section className="border-border bg-background pb-16 pt-8 text-foreground md:pt-10">
       <div className="mx-auto w-full max-w-6xl px-4">
         <h2 className="text-xl font-normal tracking-tight md:text-2xl">
           Subcategories

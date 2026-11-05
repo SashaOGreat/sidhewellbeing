@@ -1,9 +1,11 @@
 import type { ReactNode } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { MessageCircle, Phone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   type CompanyPublicInfo,
+  whatsAppMeUrl,
   withHttps,
 } from "@/lib/company-site-settings"
 import type { PriceListItem } from "@/lib/types"
@@ -18,33 +20,117 @@ export type PriceListContentProps = {
   title: string
   items: PriceListItem[]
   subcategories?: PriceListSubsection[]
+  whatsAppUrl?: string
 }
 
-function PriceListRows({ items }: { items: PriceListItem[] }) {
+function WhatsAppGlyph({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.96.52 3.8 1.44 5.4L2 22l4.93-1.55a10 10 0 0 0 5.11 1.39h.01c5.46 0 9.89-4.4 9.89-9.84C21.94 6.4 17.5 2 12.04 2zm5.77 14.05c-.24.68-1.4 1.25-1.93 1.33-.5.07-1.13.1-1.82-.11-.42-.13-.96-.31-1.65-.6-2.9-1.26-4.78-4.2-4.93-4.39-.14-.19-1.18-1.57-1.18-3 0-1.42.74-2.12 1-2.41.26-.29.57-.36.76-.36h.55c.18 0 .42-.07.65.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.1.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.56.16.28.71 1.17 1.53 1.9 1.05.93 1.94 1.22 2.21 1.36.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.19-.28.38-.23.64-.14.26.1 1.67.79 1.95.93.28.14.47.21.54.33.07.12.07.69-.17 1.37z" />
+    </svg>
+  )
+}
+
+function PriceListBento({
+  items,
+  whatsAppUrl,
+}: {
+  items: PriceListItem[]
+  whatsAppUrl?: string
+}) {
   if (items.length === 0) return null
 
   return (
-    <div className="overflow-hidden rounded-2xl border bg-card p-4">
-      {items.map((item, index) => (
-        <div
-          key={item.id}
-          className={
-            index % 2 === 0
-              ? "flex items-center gap-4 bg-background px-4 py-3.5"
-              : "flex items-center gap-4 bg-muted/40 px-4 py-3.5"
-          }
-        >
-          <p className="min-w-0 flex-1 text-sm font-medium leading-snug">
-            {item.name}
-          </p>
-          {(item.price ?? "").trim() ? (
-            <p className="shrink-0 whitespace-nowrap text-sm font-normal tabular-nums">
-              {item.price}
-            </p>
-          ) : null}
-        </div>
-      ))}
-    </div>
+    <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {items.map((item, index) => {
+        const imageUrl = (item.image_url ?? "").trim()
+        const description = (item.description ?? "").trim()
+        const price = (item.price ?? "").trim()
+        const featured = items.length >= 3 && index % 3 === 0
+
+        return (
+          <li
+            key={item.id}
+            className={cn(featured && "sm:col-span-2")}
+          >
+            <article
+              className={cn(
+                "group flex h-full flex-col overflow-hidden rounded-xl border-2 border-border bg-background",
+                "transition-colors hover:border-brand"
+              )}
+            >
+              <div
+                className={cn(
+                  "relative w-full overflow-hidden bg-muted",
+                  featured ? "aspect-[2/1]" : "aspect-[4/3]"
+                )}
+              >
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt=""
+                    fill
+                    quality={90}
+                    className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    sizes={
+                      featured
+                        ? "(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 720px"
+                        : "(max-width: 640px) 100vw, (max-width: 1024px) 40vw, 360px"
+                    }
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-muted to-muted-foreground/20"
+                    aria-hidden
+                  />
+                )}
+              </div>
+
+              <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="min-w-0 text-base font-normal leading-snug tracking-tight sm:text-lg">
+                    {item.name}
+                  </h3>
+                  {price ? (
+                    <p className="shrink-0 whitespace-nowrap text-sm font-medium tabular-nums text-brand sm:text-base">
+                      {price}
+                    </p>
+                  ) : null}
+                </div>
+                {description ? (
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {description}
+                  </p>
+                ) : null}
+                {whatsAppUrl ? (
+                  <Button
+                    variant="brand"
+                    size="lg"
+                    className="mt-auto h-12 w-full gap-2 text-base"
+                    nativeButton={false}
+                    render={
+                      <a
+                        href={whatsAppUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      />
+                    }
+                  >
+                    <WhatsAppGlyph className="size-5" />
+                    WhatsApp me
+                  </Button>
+                ) : null}
+              </div>
+            </article>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
@@ -220,6 +306,7 @@ export function PriceListContent({
   title,
   items,
   subcategories = [],
+  whatsAppUrl,
 }: PriceListContentProps) {
   const hasCategoryItems = items.length > 0
   const hasSubcategories = subcategories.some((sub) => sub.items.length > 0)
@@ -233,13 +320,18 @@ export function PriceListContent({
       </div>
 
       <div className="space-y-6">
-        {hasCategoryItems ? <PriceListRows items={items} /> : null}
+        {hasCategoryItems ? (
+          <PriceListBento items={items} whatsAppUrl={whatsAppUrl} />
+        ) : null}
 
         {subcategories.map((subcategory) =>
           subcategory.items.length > 0 ? (
             <div key={subcategory.title} className="space-y-3">
               <h3 className="text-lg font-normal">{subcategory.title}</h3>
-              <PriceListRows items={subcategory.items} />
+              <PriceListBento
+                items={subcategory.items}
+                whatsAppUrl={whatsAppUrl}
+              />
             </div>
           ) : null
         )}
@@ -254,9 +346,17 @@ export function PriceListSection({
   title,
   items,
   subcategories = [],
-}: PriceListContentProps & { company: CompanyPublicInfo }) {
+}: Omit<PriceListContentProps, "whatsAppUrl"> & {
+  company: CompanyPublicInfo
+}) {
+  const whatsAppUrl = whatsAppMeUrl(company.phone)
   const content = (
-    <PriceListContent title={title} items={items} subcategories={subcategories} />
+    <PriceListContent
+      title={title}
+      items={items}
+      subcategories={subcategories}
+      whatsAppUrl={whatsAppUrl}
+    />
   )
 
   return (

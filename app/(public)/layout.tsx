@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import type { Category, Subcategory } from "@/lib/types"
 import { HeaderShell } from "@/components/public/header-shell"
 import { Footer } from "@/components/public/footer"
+import { FooterGate } from "@/components/public/footer-gate"
 import { ContentBlocksSection } from "@/components/public/content-blocks-section"
 import { loadRegionBlocks } from "@/lib/reusable-sections"
 
@@ -29,10 +30,16 @@ export default async function PublicLayout({
     <>
       <HeaderShell categories={typedCategories} />
       <main className="min-h-screen">{children}</main>
-      {beforeFooterBlocks.length > 0 ? (
-        <ContentBlocksSection blocks={beforeFooterBlocks} compactSpacing />
-      ) : null}
-      <Footer categories={typedCategories} />
+      <FooterGate>
+        {beforeFooterBlocks.length > 0 ? (
+          <ContentBlocksSection
+            blocks={beforeFooterBlocks}
+            compactSpacing
+            notesStyle
+          />
+        ) : null}
+        <Footer categories={typedCategories} />
+      </FooterGate>
     </>
   )
 }

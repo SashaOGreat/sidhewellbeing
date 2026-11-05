@@ -363,6 +363,51 @@ export async function uploadImage(formData: FormData): Promise<string> {
   return uploadFileToImagesBucket(file)
 }
 
+const VIDEO_MIME_TYPES = new Set([
+  "video/mp4",
+  "video/webm",
+  "video/ogg",
+  "video/quicktime",
+])
+
+function videoExtension(file: File): string {
+  const fromName = file.name.split(".").pop()?.toLowerCase()
+  if (fromName && ["mp4", "webm", "ogg", "ogv", "mov"].includes(fromName)) {
+    return fromName === "mov" ? "mp4" : fromName
+  }
+  if (file.type === "video/webm") return "webm"
+  if (file.type === "video/ogg") return "ogg"
+  return "mp4"
+}
+
+export async function uploadVideo(formData: FormData): Promise<string> {
+  const supabase = await createClient()
+  const file = formData.get("file") as File
+
+  if (!file || file.size === 0) throw new Error("No file")
+
+  const mime = (file.type || "").toLowerCase()
+  if (mime && !VIDEO_MIME_TYPES.has(mime) && !mime.startsWith("video/")) {
+    throw new Error("Please upload an MP4 or WebM video")
+  }
+
+  const ext = videoExtension(file)
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`
+  const contentType = mime || (ext === "webm" ? "video/webm" : "video/mp4")
+
+  const { error } = await supabase.storage.from("images").upload(fileName, file, {
+    contentType,
+  })
+
+  if (error) throw new Error(error.message)
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from("images").getPublicUrl(fileName)
+
+  return publicUrl
+}
+
 /** Upload a category/subcategory cover: Replicate remove-bg → PNG in storage (SVG is uploaded as-is). */
 export async function uploadCategoryCoverImage(formData: FormData): Promise<string> {
   const supabase = await createClient()
@@ -679,6 +724,7 @@ export async function createPriceListItem(
   const supabase = await createClient()
   const { categoryId, subcategoryId } = normalizePriceListScope(formData)
   const name = String(formData.get("name") ?? "").trim()
+  const description = String(formData.get("description") ?? "").trim()
   const price = String(formData.get("price") ?? "").trim()
   const imageUrl = asOptionalString(formData.get("image_url"))
 
@@ -704,6 +750,7 @@ export async function createPriceListItem(
       category_id: categoryId,
       subcategory_id: subcategoryId,
       name,
+      description,
       price,
       image_url: imageUrl,
       display_order: displayOrder,
@@ -723,6 +770,7 @@ export async function updatePriceListItem(
 ): Promise<PriceListItem> {
   const supabase = await createClient()
   const name = String(formData.get("name") ?? "").trim()
+  const description = String(formData.get("description") ?? "").trim()
   const price = String(formData.get("price") ?? "").trim()
   const imageUrl = asOptionalString(formData.get("image_url"))
 
@@ -732,6 +780,7 @@ export async function updatePriceListItem(
     .from("price_list_items")
     .update({
       name,
+      description,
       price,
       image_url: imageUrl,
     })

@@ -18,6 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import {
   createPriceListItem,
@@ -25,6 +26,7 @@ import {
   reorderPriceListItems,
   updatePriceListItem,
 } from "@/lib/actions/admin"
+import { ImageUpload } from "@/components/admin/image-upload"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { buildPriceListSections } from "@/lib/price-list"
@@ -47,12 +49,14 @@ type Scope = {
 
 type Draft = {
   name: string
+  description: string
   price: string
   imageUrl: string
 }
 
 const EMPTY_DRAFT: Draft = {
   name: "",
+  description: "",
   price: "",
   imageUrl: "",
 }
@@ -73,6 +77,7 @@ function buildScopeFormData(scope: Scope) {
 function buildItemFormData(scope: Scope, draft: Draft) {
   const formData = buildScopeFormData(scope)
   formData.set("name", draft.name)
+  formData.set("description", draft.description)
   formData.set("price", draft.price)
   formData.set("image_url", draft.imageUrl)
   return formData
@@ -106,6 +111,7 @@ function SortablePriceListRow({
   const [saving, setSaving] = useState(false)
   const [draft, setDraft] = useState<Draft>({
     name: item.name,
+    description: item.description ?? "",
     price: item.price ?? "",
     imageUrl: item.image_url ?? "",
   })
@@ -113,10 +119,11 @@ function SortablePriceListRow({
   useEffect(() => {
     setDraft({
       name: item.name,
+      description: item.description ?? "",
       price: item.price ?? "",
       imageUrl: item.image_url ?? "",
     })
-  }, [item.id, item.image_url, item.name, item.price])
+  }, [item.description, item.id, item.image_url, item.name, item.price])
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -152,20 +159,40 @@ function SortablePriceListRow({
         </button>
 
         {editing ? (
-          <div className="grid min-w-0 flex-1 gap-3 lg:grid-cols-[minmax(0,1.5fr)_180px_auto]">
+          <div className="grid min-w-0 flex-1 gap-3">
+            <div className="grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_180px]">
+              <Input
+                value={draft.name}
+                onChange={(event) =>
+                  setDraft((current) => ({ ...current, name: event.target.value }))
+                }
+                placeholder="Title"
+              />
+              <Input
+                value={draft.price}
+                onChange={(event) =>
+                  setDraft((current) => ({ ...current, price: event.target.value }))
+                }
+                placeholder="Price"
+              />
+            </div>
             <Input
-              value={draft.name}
+              value={draft.description}
               onChange={(event) =>
-                setDraft((current) => ({ ...current, name: event.target.value }))
+                setDraft((current) => ({
+                  ...current,
+                  description: event.target.value,
+                }))
               }
-              placeholder="Product name"
+              placeholder="Description (optional)"
             />
-            <Input
-              value={draft.price}
-              onChange={(event) =>
-                setDraft((current) => ({ ...current, price: event.target.value }))
+            <ImageUpload
+              value={draft.imageUrl}
+              onChange={(url) =>
+                setDraft((current) => ({ ...current, imageUrl: url }))
               }
-              placeholder="Price"
+              label="Image (optional)"
+              allowRemoveBackgroundToggle
             />
             <div className="flex items-center justify-end gap-2">
               <Button
@@ -188,6 +215,7 @@ function SortablePriceListRow({
                 onClick={() => {
                   setDraft({
                     name: item.name,
+                    description: item.description ?? "",
                     price: item.price ?? "",
                     imageUrl: item.image_url ?? "",
                   })
@@ -200,8 +228,24 @@ function SortablePriceListRow({
           </div>
         ) : (
           <div className="flex min-w-0 flex-1 items-center gap-3">
+            {item.image_url?.trim() ? (
+              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-muted">
+                <Image
+                  src={item.image_url}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="48px"
+                />
+              </div>
+            ) : null}
             <div className="min-w-0 flex-1">
               <p className="truncate font-medium">{item.name}</p>
+              {item.description?.trim() ? (
+                <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
+                  {item.description}
+                </p>
+              ) : null}
             </div>
             {item.price?.trim() ? (
               <p className="shrink-0 font-normal whitespace-nowrap">{item.price}</p>
@@ -293,25 +337,45 @@ function PriceListScopeEditor({
       </div>
 
       <div className="space-y-4 p-4">
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_180px_auto]">
+        <div className="grid gap-3">
+          <div className="grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_180px_auto]">
+            <Input
+              value={draft.name}
+              onChange={(event) =>
+                setDraft((current) => ({ ...current, name: event.target.value }))
+              }
+              placeholder="Title"
+            />
+            <Input
+              value={draft.price}
+              onChange={(event) =>
+                setDraft((current) => ({ ...current, price: event.target.value }))
+              }
+              placeholder="Price (optional)"
+            />
+            <Button type="button" onClick={() => void handleCreate()} disabled={saving}>
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              Save
+            </Button>
+          </div>
           <Input
-            value={draft.name}
+            value={draft.description}
             onChange={(event) =>
-              setDraft((current) => ({ ...current, name: event.target.value }))
+              setDraft((current) => ({
+                ...current,
+                description: event.target.value,
+              }))
             }
-            placeholder="Product or service"
+            placeholder="Description (optional)"
           />
-          <Input
-            value={draft.price}
-            onChange={(event) =>
-              setDraft((current) => ({ ...current, price: event.target.value }))
+          <ImageUpload
+            value={draft.imageUrl}
+            onChange={(url) =>
+              setDraft((current) => ({ ...current, imageUrl: url }))
             }
-            placeholder="Price (optional)"
+            label="Image (optional)"
+            allowRemoveBackgroundToggle
           />
-          <Button type="button" onClick={() => void handleCreate()} disabled={saving}>
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            Save
-          </Button>
         </div>
 
         {items.length === 0 ? (

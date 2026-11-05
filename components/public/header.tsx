@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet"
@@ -14,29 +15,23 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle"
 import { SiteEmblem } from "@/components/public/site-emblem"
 import type { Category, Subcategory } from "@/lib/types"
-import { cn, toSentenceCase } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 const MAX_VISIBLE_CATEGORIES = 7
-const SCROLL_THRESHOLD = 24
 
 type Props = {
   categories: (Category & { subcategories: Subcategory[] })[]
 }
 
 export function Header({ categories }: Props) {
+  const pathname = usePathname()
   const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const update = () => setScrolled(window.scrollY > SCROLL_THRESHOLD)
-    update()
-    window.addEventListener("scroll", update, { passive: true })
-    return () => window.removeEventListener("scroll", update)
-  }, [])
 
   const visibleCategories = categories.slice(0, MAX_VISIBLE_CATEGORIES)
   const hiddenCategories = categories.slice(MAX_VISIBLE_CATEGORIES)
-  const solid = scrolled || open
+  /** Transparent white overlay only on the fullscreen homepage video. */
+  const isHomeOverlay = pathname === "/" && !open
+  const solid = !isHomeOverlay
 
   const ghostNavClass = solid
     ? "text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -110,7 +105,7 @@ export function Header({ categories }: Props) {
                       key={cat.id}
                       render={<Link href={`/${cat.slug}`} />}
                     >
-                      {toSentenceCase(cat.name)}
+                      {cat.name}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -126,8 +121,15 @@ export function Header({ categories }: Props) {
 
             <ThemeToggle className={iconGhostClass} />
 
-            <Link href="/contact" className="ml-1">
+            <Link href="/contact">
+              <Button variant="ghost" className={ghostNavClass}>
+                Contact
+              </Button>
+            </Link>
+
+            <Link href="/pricing" className="ml-1">
               <Button
+                variant="brand"
                 size="sm"
                 className={
                   solid
@@ -135,7 +137,7 @@ export function Header({ categories }: Props) {
                     : "border border-white/40 bg-white text-zinc-950 hover:bg-white/90 hover:text-zinc-950"
                 }
               >
-                Contact
+                Upcoming events
               </Button>
             </Link>
           </nav>
@@ -185,7 +187,7 @@ export function Header({ categories }: Props) {
                           onClick={() => setOpen(false)}
                           className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
                         >
-                          {toSentenceCase(cat.name)}
+                          {cat.name}
                         </Link>
                         {cat.subcategories?.length > 0 && (
                           <div className="ml-3 border-l border-border pl-3">
@@ -196,7 +198,7 @@ export function Header({ categories }: Props) {
                                 onClick={() => setOpen(false)}
                                 className="block px-3 py-1.5 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                               >
-                                {toSentenceCase(sub.name)}
+                                {sub.name}
                               </Link>
                             ))}
                           </div>
@@ -206,14 +208,23 @@ export function Header({ categories }: Props) {
                   })}
                   <div className="border-t border-border my-3" />
                   <Link
+                    href="/contact"
+                    onClick={() => setOpen(false)}
+                    className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
+                  >
+                    Contact
+                  </Link>
+                  <Link
                     href="/blog"
                     onClick={() => setOpen(false)}
                     className="block px-3 py-2.5 rounded-lg text-sm font-medium text-foreground hover:bg-accent transition-colors"
                   >
                     Blog
                   </Link>
-                  <Link href="/contact" onClick={() => setOpen(false)}>
-                    <Button className="w-full mt-2">Contact</Button>
+                  <Link href="/pricing" onClick={() => setOpen(false)}>
+                    <Button variant="brand" className="w-full mt-2">
+                      Upcoming events
+                    </Button>
                   </Link>
                 </nav>
               </SheetContent>
@@ -250,7 +261,7 @@ function CategoryNavItem({
     return (
       <Link href={`/${category.slug}`}>
         <Button variant="ghost" className={linkClasses}>
-          {toSentenceCase(category.name)}
+          {category.name}
         </Button>
       </Link>
     )
@@ -261,7 +272,7 @@ function CategoryNavItem({
       <DropdownMenuTrigger
         render={<Button variant="ghost" className={linkClasses} />}
       >
-        {toSentenceCase(category.name)}
+        {category.name}
         <ChevronDown className="ml-1 h-3 w-3 opacity-60" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-[16rem] p-2">
@@ -270,7 +281,7 @@ function CategoryNavItem({
             key={sub.id}
             render={<Link href={`/${category.slug}/${sub.slug}`} />}
           >
-            {toSentenceCase(sub.name)}
+            {sub.name}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

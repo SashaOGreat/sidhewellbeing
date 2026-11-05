@@ -10,9 +10,15 @@ import { cn } from "@/lib/utils"
 type Props = {
   blocks: ContentBlock[]
   compactSpacing?: boolean
+  /** Smaller body/H3 typography for footnote-style regions; H1/H2 stay full size. */
+  notesStyle?: boolean
 }
 
-export function ContentBlocksSection({ blocks, compactSpacing = false }: Props) {
+export function ContentBlocksSection({
+  blocks,
+  compactSpacing = false,
+  notesStyle = false,
+}: Props) {
   const roots = blocks.filter(isRootGridBlock)
   if (roots.length === 0) return null
 
@@ -27,7 +33,9 @@ export function ContentBlocksSection({ blocks, compactSpacing = false }: Props) 
     <section
       className={cn(
         "mx-auto w-full max-w-6xl px-4",
-        compactSpacing ? "" : ""
+        compactSpacing ? "" : "",
+        notesStyle &&
+          "text-xs leading-snug [&_h3]:!text-sm [&_h3]:!leading-snug [&_p]:text-xs"
       )}
     >
       <div className="flex flex-col">

@@ -15,7 +15,7 @@ export function HeroBreadcrumbs({ items }: Props) {
 
   return (
     <nav aria-label="Page navigation" className="mb-4">
-      <ol className="flex flex-wrap items-center gap-1 text-sm text-white/75">
+      <ol className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
         {items.map((item, index) => {
           const isLast = index === items.length - 1
 
@@ -27,13 +27,13 @@ export function HeroBreadcrumbs({ items }: Props) {
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-sm"
+                  className="rounded-sm transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
-                  className={isLast ? "text-white/90" : undefined}
+                  className={isLast ? "text-foreground" : undefined}
                   {...(isLast ? { "aria-current": "page" as const } : {})}
                 >
                   {item.label}

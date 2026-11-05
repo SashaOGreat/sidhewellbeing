@@ -6,12 +6,14 @@ const HOMEPAGE_SETTING_KEYS = [
   "homepage_h1",
   "homepage_description",
   "homepage_cover_image",
+  "homepage_cover_video",
 ] as const
 
 export type HomepageSettings = {
   h1: string
   description: string
   coverImage: string
+  coverVideo: string
 }
 
 export const DEFAULT_HOMEPAGE_H1 = "SIDHE Wellbeing"
@@ -31,11 +33,13 @@ export function resolveHomepageSettings(input: {
   h1?: string | null
   description?: string | null
   coverImage?: string | null
+  coverVideo?: string | null
 }): HomepageSettings {
   return {
     h1: resolveCopy(input.h1, DEFAULT_HOMEPAGE_H1),
     description: resolveCopy(input.description, DEFAULT_HOMEPAGE_DESCRIPTION),
     coverImage: input.coverImage?.trim() ?? "",
+    coverVideo: input.coverVideo?.trim() ?? "",
   }
 }
 
@@ -57,6 +61,7 @@ export const getHomepageSettingsCached = unstable_cache(
       h1: getValue("homepage_h1"),
       description: getValue("homepage_description"),
       coverImage: getValue("homepage_cover_image"),
+      coverVideo: getValue("homepage_cover_video"),
     })
   },
   ["homepage-settings"],

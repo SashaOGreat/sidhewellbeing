@@ -3,8 +3,8 @@ import type { NextConfig } from "next"
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
-      /** Cover upload via Server Actions (default 1 MB). */
-      bodySizeLimit: "8mb",
+      /** Image/video uploads via Server Actions (default 1 MB). */
+      bodySizeLimit: "64mb",
     },
   },
   async redirects() {

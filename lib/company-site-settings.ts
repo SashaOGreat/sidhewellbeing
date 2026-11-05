@@ -85,3 +85,10 @@ export function withHttps(url: string): string {
   if (/^https?:\/\//i.test(t)) return t
   return `https://${t}`
 }
+
+/** Digits-only `wa.me` link from a phone set in company settings. */
+export function whatsAppMeUrl(phone: string): string {
+  const digits = phone.replace(/\D/g, "")
+  if (!digits) return ""
+  return `https://wa.me/${digits}`
+}

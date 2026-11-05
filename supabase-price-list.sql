@@ -3,6 +3,7 @@ create table if not exists public.price_list_items (
   category_id uuid references public.categories(id) on delete cascade,
   subcategory_id uuid references public.subcategories(id) on delete cascade,
   name text not null,
+  description text not null default '',
   price text not null,
   image_url text,
   display_order integer not null default 0,

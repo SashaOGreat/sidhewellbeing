@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ImageUpload } from "@/components/admin/image-upload"
+import { VideoUpload } from "@/components/admin/video-upload"
 import { updateSiteSetting } from "@/lib/actions/admin"
 import { createClient } from "@/lib/supabase/client"
 import { resolveHomepageSettings } from "@/lib/seo/load-homepage-settings"
@@ -15,7 +15,7 @@ import { Save, Loader2 } from "lucide-react"
 export default function HomepageAdmin() {
   const [h1, setH1] = useState("")
   const [description, setDescription] = useState("")
-  const [coverImage, setCoverImage] = useState("")
+  const [coverVideo, setCoverVideo] = useState("")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -28,10 +28,11 @@ export default function HomepageAdmin() {
           h1: data.find((s) => s.key === "homepage_h1")?.value,
           description: data.find((s) => s.key === "homepage_description")?.value,
           coverImage: data.find((s) => s.key === "homepage_cover_image")?.value,
+          coverVideo: data.find((s) => s.key === "homepage_cover_video")?.value,
         })
         setH1(resolved.h1)
         setDescription(resolved.description)
-        setCoverImage(resolved.coverImage)
+        setCoverVideo(resolved.coverVideo)
       }
       setLoading(false)
     }
@@ -44,7 +45,7 @@ export default function HomepageAdmin() {
       await Promise.all([
         updateSiteSetting("homepage_h1", h1),
         updateSiteSetting("homepage_description", description),
-        updateSiteSetting("homepage_cover_image", coverImage),
+        updateSiteSetting("homepage_cover_video", coverVideo),
       ])
       toast.success("Homepage saved")
     } catch {
@@ -98,10 +99,10 @@ export default function HomepageAdmin() {
           />
         </div>
 
-        <ImageUpload
-          value={coverImage}
-          onChange={setCoverImage}
-          label="Cover image"
+        <VideoUpload
+          value={coverVideo}
+          onChange={setCoverVideo}
+          label="Background video"
         />
       </div>
     </div>

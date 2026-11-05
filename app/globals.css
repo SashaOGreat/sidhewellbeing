@@ -50,7 +50,7 @@
 }
 
 :root {
-  --brand: #ee7c95;
+  --brand: #9941eb;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -137,7 +137,8 @@
     @apply font-sans;
   }
   h1,
-  h2 {
+  h2,
+  h3 {
     @apply font-heading font-normal;
   }
 }

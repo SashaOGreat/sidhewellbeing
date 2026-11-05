@@ -128,6 +128,7 @@ create table price_list_items (
   category_id uuid references categories(id) on delete cascade,
   subcategory_id uuid references subcategories(id) on delete cascade,
   name text not null,
+  description text not null default '',
   price text not null,
   image_url text,
   display_order integer default 0,

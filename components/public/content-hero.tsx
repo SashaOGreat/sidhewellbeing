@@ -12,71 +12,41 @@ type Props = {
 }
 
 /**
- * Hero for category and subcategory pages — custom layout (not the homepage split).
- * Background = the same image as in the preview, blurred + a semi-transparent brand colour.
+ * Hero for category and subcategory pages.
+ * Sharp cover image; title overlaps into the image without a fade overlay.
  */
 export function ContentHero({ title, description, imageUrl, breadcrumbs }: Props) {
   const src = imageUrl?.trim() || ""
 
   return (
-    <section className="relative overflow-hidden border-b border-white/15">
-      <div className="pointer-events-none absolute inset-0 bg-brand" aria-hidden>
+    <section className="relative min-h-[min(56vh,520px)] overflow-hidden bg-background">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-[min(56vh,520px)] bg-muted"
+        aria-hidden
+      >
         {src ? (
           <Image
             src={src}
             alt=""
             fill
-            className="scale-[1.2] object-cover blur-[20px]"
+            priority
+            quality={90}
+            className="object-cover object-center"
             sizes="100vw"
           />
         ) : null}
       </div>
-      <div
-        className="pointer-events-none absolute inset-0 bg-brand/82"
-        aria-hidden
-      />
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-28 pb-10">
-        {src ? (
-          <div className="relative mb-8 aspect-[2/1] w-full overflow-hidden rounded-xl bg-white/10 ring-1 ring-white/20 lg:hidden">
-            <Image
-              src={src}
-              alt=""
-              fill
-              quality={100}
-              className="object-cover object-center"
-              priority
-              sizes="(max-width: 1024px) 100vw, 640px"
-            />
-          </div>
+
+      <div className="relative mx-auto w-full max-w-6xl px-4 pb-6 pt-[calc(min(56vh,520px)-11rem)] md:pb-8 md:pt-[calc(min(56vh,520px)-14rem)]">
+        {breadcrumbs?.length ? <HeroBreadcrumbs items={breadcrumbs} /> : null}
+        <h1 className="text-4xl font-normal tracking-tight text-foreground md:text-5xl lg:text-6xl lg:leading-[1.05] xl:text-7xl">
+          {title}
+        </h1>
+        {description ? (
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            {description}
+          </p>
         ) : null}
-
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:gap-12">
-          <div className="min-w-0 flex-1 border-white">
-            {breadcrumbs?.length ? <HeroBreadcrumbs items={breadcrumbs} /> : null}
-            <h1 className="text-3xl font-normal tracking-tight text-white md:text-4xl lg:text-5xl lg:leading-tight">
-              {title}
-            </h1>
-            {description ? (
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
-                {description}
-              </p>
-            ) : null}
-          </div>
-
-          {src ? (
-            <div className="relative mx-auto hidden aspect-square w-48 shrink-0 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-white/20 lg:mx-0 lg:block lg:w-52">
-              <Image
-                src={src}
-                alt=""
-                fill
-                quality={100}
-                className="object-cover object-center"
-                priority
-                sizes="640px"
-              />
-            </div>
-          ) : null}
-        </div>
       </div>
     </section>
   )

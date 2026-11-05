@@ -1,8 +1,5 @@
-import { createClient } from "@/lib/supabase/server"
 import { HomeHero } from "@/components/public/home-hero"
-import { AfterHeroRegion } from "@/components/public/after-hero-region"
 import { JsonLd } from "@/components/public/json-ld"
-import type { Category, Subcategory } from "@/lib/types"
 import type { Metadata } from "next"
 import { getCompanyPublicInfoCached } from "@/lib/get-company-settings-cached"
 import { buildHomepageJsonLd } from "@/lib/seo/homepage-json-ld"
@@ -18,21 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const supabase = await createClient()
-
-  const [{ data: categories }, settings, company] = await Promise.all([
-    supabase
-      .from("categories")
-      .select("*, subcategories(*)")
-      .order("display_order")
-      .order("display_order", { referencedTable: "subcategories" }),
+  const [settings, company] = await Promise.all([
     getHomepageSettingsCached(),
     getCompanyPublicInfoCached(),
   ])
-
-  const typedCategories = (categories ?? []) as (Category & {
-    subcategories: Subcategory[]
-  })[]
 
   const jsonLd = buildHomepageJsonLd({ settings, company })
 
@@ -42,10 +28,9 @@ export default async function HomePage() {
       <HomeHero
         title={settings.h1 || DEFAULT_HOMEPAGE_H1}
         description={settings.description}
-        imageUrl={settings.coverImage || null}
-        topCategories={typedCategories}
+        videoUrl={settings.coverVideo || null}
+        posterUrl={settings.coverImage || null}
       />
-      <AfterHeroRegion />
     </>
   )
 }
